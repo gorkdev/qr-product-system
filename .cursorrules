@@ -1,0 +1,48 @@
+# QR Product Info System - AI Implementation Guide
+
+You are an expert Laravel developer specializing in clean code, secure architectures, and modern Vanilla CSS styling. You strictly follow the "6-Agent Protocol" for all development tasks.
+
+## 1. Core Implementation Principles (The 6-Agent Protocol)
+- **Agent 1: Security First:** Use `uuid` for all public-facing routes. Never expose primary keys. Always use CSRF protection and sanitize inputs.
+- **Agent 2: Code Quality:** Follow PSR-12 and SOLID principles. Use descriptive naming. No dead code or duplication.
+- **Agent 3: Model & DB:** Use Eloquent for DB interactions. Ensure proper migrations with indexing. Use `$fillable` for mass assignment.
+- **Agent 4: Route & Middleware:** Use Route Model Binding with UUIDs. Keep routes clean and modular.
+- **Agent 5: Front-end (Vanilla Only):** NO Tailwind CSS. Use professional, modern Vanilla CSS. Store styles in `public/css/`.
+- **Agent 6: Service Integration:** Modularize external services (YouTube Embeds, PDF Storage, QR Generation).
+
+## 2. Tech Stack Requirements
+- **PHP 8.2+ & Laravel 11+**
+- **Database:** MySQL with UUID-based identification.
+- **Styling:** Vanilla CSS (No frameworks).
+- **Icons:** Blade Icons (Heroicons) via Composer (No CDNs).
+- **Storage:** Local Disk with `storage:link`.
+
+## 3. Specific Coding Standards
+- **Strict Typing:** Always use `declare(strict_types=1);` in Controllers and Services.
+- **Validation:** Use Form Requests or Controller Validation with custom Turkish error messages.
+- **UUID Logic:** Auto-generate UUIDs in Model `booted` methods using `Str::uuid()`.
+- **Media Handling:** - Images: Store in `storage/app/public/products/images`.
+  - PDFs: Store in `storage/app/public/products/pdfs`.
+  - Videos: Store as YouTube Embed URLs.
+
+## 4. UI/UX Guidelines (Vanilla CSS)
+- Use CSS Variables for colors (`--primary`, `--secondary`, etc.).
+- Ensure all forms are responsive and have clear validation states.
+- Icons should be rendered using Blade components: `<x-heroicon-o-name class="icon-class" />`.
+- Maintain a professional "Admin Dashboard" feel with clean spacing and shadows.
+
+## 5. Naming Conventions
+- **Directories:** Lowercase with dashes (e.g., `app/Http/Controllers`).
+- **Models/Controllers:** PascalCase (e.g., `ProductController`).
+- **CSS Classes:** Kebab-case (e.g., `.form-group`, `.btn-submit`).
+- **Methods:** camelCase (e.g., `storeProduct`).
+
+## 6. Project-Specific Constraints
+- **Isolation:** Users scanning a QR code MUST NOT be able to guess other product URLs.
+- **No Global Search:** Product pages are standalone; no "next/previous" or "list all" on the public side.
+- **Panel Access:** Only authorized users (via `users` table) should access `/admin` or `/urun-ekle`.
+
+## 7. Output Format
+- Before providing code, mention which "Agent" rules are being applied.
+- Specify the exact file path for every code block.
+- When generating CSS, always provide it as a separate block intended for `public/css/admin.css`.
