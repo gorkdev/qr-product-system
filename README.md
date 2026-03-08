@@ -1,59 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# QR Product System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based web application for managing products and sharing them via QR codes. Visitors are shown a redirect page with a countdown before accessing product content. The system tracks visits with IP-based geolocation.
 
-## About Laravel
+## What It Does
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Product Management**: Create, edit, and delete products with name, description, images, YouTube videos, and PDF documents
+- **QR Code Generation**: Each product gets a unique shareable link and QR code
+- **Visit Tracking**: Logs every visit with IP, location (city, country, region), device type, browser, and ISP
+- **Access Control**: Two modes—allow all links or restrict access to QR code scans only
+- **Redirect Flow**: Visitors see a brief countdown (5 seconds) while visit data is saved, then view the product content
+- **Dashboard**: Overview of product count, total visits, visits today/week/month, and top products
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2+
+- Composer
+- Node.js 18+ and npm
+- SQLite (default) or MySQL/PostgreSQL
 
-## Learning Laravel
+## Clone the Project
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+git clone https://github.com/gorkdev/qr-product-system.git
+cd qr-product-system
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation (Step by Step)
 
-## Laravel Sponsors
+### 1. Install PHP Dependencies
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+composer install
+```
 
-### Premium Partners
+### 2. Environment Setup
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+### 3. Configure the Database
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The project uses SQLite by default. Create the database file:
 
-## Code of Conduct
+```bash
+touch database/database.sqlite
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+For MySQL or PostgreSQL, update `.env` accordingly:
 
-## Security Vulnerabilities
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=qr_product_system
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Run Migrations
+
+```bash
+php artisan migrate
+```
+
+This creates all required tables: products, product_visits, settings, cache, sessions, jobs.
+
+### 5. Create Storage Link
+
+```bash
+php artisan storage:link
+```
+
+### 6. Install Frontend Dependencies
+
+```bash
+npm install
+npm run build
+```
+
+### 7. (Optional) Fresh Database
+
+To start with a clean database (no products, visits, or settings):
+
+```bash
+php artisan migrate:fresh
+```
+
+## Running the Application
+
+### Development Server
+
+```bash
+php artisan serve
+```
+
+Then open [http://localhost:8000](http://localhost:8000) in your browser.
+
+### Admin Panel
+
+- **Dashboard**: `http://localhost:8000/`
+- **Products**: `http://localhost:8000/urunler`
+- **Add Product**: `http://localhost:8000/urunler/yeni`
+- **Visit Logs**: `http://localhost:8000/ziyaretler`
+- **Settings**: `http://localhost:8000/ayarlar`
+
+### Public Product Links
+
+When a product is created, it gets a share token. The public URL format is:
+
+```
+http://localhost:8000/urun-bilgisi/{share_token}
+```
+
+Visitors see a redirect page with a 5-second countdown, then the product content (images, description, videos, PDF).
+
+## IP Geolocation
+
+Visit location is fetched from [ip-api.com](http://ip-api.com/json/). No API key is required for basic usage. Data saved: country, region, city, timezone, ISP, latitude, longitude.
+
+## Running Tests
+
+```bash
+php artisan test
+```
+
+## Tech Stack
+
+- **Backend**: Laravel 12, Livewire
+- **Frontend**: Blade, Tailwind CSS (via Vite), Alpine.js
+- **QR Codes**: endroid/qr-code
+- **Images**: intervention/image-laravel
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT

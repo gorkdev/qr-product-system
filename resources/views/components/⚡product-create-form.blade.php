@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -46,6 +47,8 @@ new class extends Component
     public ?string $successMessage = null;
 
     public ?string $createdProductLink = null;
+
+    public ?string $createdProductShareToken = null;
 
     public array $persistedErrors = [];
 
@@ -201,7 +204,11 @@ new class extends Component
         $this->successMessage = $this->isEdit ? 'Ürün başarıyla güncellendi!' : 'Ürün başarıyla kaydedildi!';
 
         if (! $this->isEdit) {
-            $this->createdProductLink = url(route('product.show', $product->share_token));
+            $gateUrl = url(route('product.gate', $product->share_token));
+            $this->createdProductLink = Setting::get('access_mode', 'link') === 'qr_only'
+                ? $gateUrl . '?ref=qr'
+                : $gateUrl;
+            $this->createdProductShareToken = $product->share_token;
             $this->reset(['name', 'description', 'main_image', 'additional_images', 'videos', 'pdf']);
             $this->additional_images = [null];
             $this->videos = [''];
@@ -248,7 +255,9 @@ new class extends Component
             @endif
 
             @php
-                $productLink = $createdProductLink ?? ($isEdit && $product ? url(route('product.show', $product->share_token)) : null);
+                $accessMode = \App\Models\Setting::get('access_mode', 'link');
+                $gateBase = $product ? url(route('product.gate', $product->share_token)) : null;
+                $productLink = $createdProductLink ?? ($isEdit && $gateBase ? ($accessMode === 'qr_only' ? $gateBase . '?ref=qr' : $gateBase) : null);
             @endphp
             @if($productLink)
                 <div class="product-link-box" x-data="{ copied: false }">
@@ -263,6 +272,16 @@ new class extends Component
                             <span x-text="copied ? 'Kopyalandı' : 'Kopyala'">Kopyala</span>
                         </button>
                     </div>
+                    @php $displayProduct = $product ?? ($createdProductShareToken ? \App\Models\Product::where('share_token', $createdProductShareToken)->first() : null); @endphp
+                    @if($displayProduct && ($qrUrl = $displayProduct->getQrCodePath()))
+                        <div class="product-qr-box">
+                            <label class="product-link-label">QR Kod (taranarak linke gidilir)</label>
+                            <div class="product-qr-row">
+                                <img src="{{ $qrUrl }}" alt="QR Kod" class="product-qr-img" width="150" height="150">
+                                <a href="{{ $qrUrl }}" download="qr-{{ $displayProduct->uuid }}.png" class="btn btn-outline btn-sm">İndir</a>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             @endif
 
@@ -376,10 +395,11 @@ new class extends Component
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"
+                            :disabled="submitting"
                             wire:loading.attr="disabled"
                             wire:target="save">
-                        <span wire:loading.remove wire:target="save">{{ $isEdit ? 'Güncelle' : 'Ürünü Kaydet' }}</span>
-                        <span wire:loading wire:target="save">Kaydediliyor...</span>
+                        <span x-show="!submitting">{{ $isEdit ? 'Güncelle' : 'Ürünü Kaydet' }}</span>
+                        <span x-show="submitting" x-cloak style="display:none">Kaydediliyor...</span>
                     </button>
                     @if($isEdit)
                         <a href="{{ route('product.index') }}" class="btn btn-outline" wire:navigate>İptal</a>
@@ -393,34 +413,43 @@ new class extends Component
 @script
 <script>
 Alpine.data('productFormUploader', () => ({
+    submitting: false,
+
     async uploadThenSave(event) {
-        const form = event.target;
-        const mainInput = form.querySelector('#main_image');
-        const pdfInput = form.querySelector('#pdf');
-        const additionalInputs = form.querySelectorAll('input[data-property^="additional_images"]');
+        if (this.submitting) return;
+        this.submitting = true;
 
-        const uploads = [];
+        try {
+            const form = event.target;
+            const mainInput = form.querySelector('#main_image');
+            const pdfInput = form.querySelector('#pdf');
+            const additionalInputs = form.querySelectorAll('input[data-property^="additional_images"]');
 
-        const uploadFile = (prop, file) => new Promise((resolve, reject) => {
-            this.$wire.$upload(prop, file, resolve, reject, () => {});
-        });
+            const uploads = [];
 
-        if (mainInput?.files?.[0]) {
-            uploads.push(uploadFile('main_image', mainInput.files[0]));
-        }
-        additionalInputs.forEach(input => {
-            if (input.files?.[0]) {
-                uploads.push(uploadFile(input.dataset.property, input.files[0]));
+            const uploadFile = (prop, file) => new Promise((resolve, reject) => {
+                this.$wire.$upload(prop, file, resolve, reject, () => {});
+            });
+
+            if (mainInput?.files?.[0]) {
+                uploads.push(uploadFile('main_image', mainInput.files[0]));
             }
-        });
-        if (pdfInput?.files?.[0]) {
-            uploads.push(uploadFile('pdf', pdfInput.files[0]));
-        }
+            additionalInputs.forEach(input => {
+                if (input.files?.[0]) {
+                    uploads.push(uploadFile(input.dataset.property, input.files[0]));
+                }
+            });
+            if (pdfInput?.files?.[0]) {
+                uploads.push(uploadFile('pdf', pdfInput.files[0]));
+            }
 
-        if (uploads.length > 0) {
-            await Promise.all(uploads).catch(() => {});
+            if (uploads.length > 0) {
+                await Promise.all(uploads).catch(() => {});
+            }
+            await this.$wire.save();
+        } finally {
+            this.submitting = false;
         }
-        this.$wire.save();
     }
 }));
 </script>

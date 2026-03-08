@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Ürün') - QR Ürün Bilgisi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    @stack('styles')
     <style>
         .public-body { min-height: 100vh; background: #f5f5f5; padding: 1.5rem; }
         .public-product { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
@@ -26,7 +28,7 @@
         @media (min-width: 600px) { .public-body { padding: 2rem; } .public-product__body { padding: 2rem 2.25rem; } .public-product__title { font-size: 1.75rem; } }
     </style>
 </head>
-<body class="public-body">
+<body class="public-body @yield('body_class')">
     @yield('content')
 </body>
 </html>

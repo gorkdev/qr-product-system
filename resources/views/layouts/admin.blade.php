@@ -34,6 +34,16 @@
                 <x-heroicon-o-plus-circle class="nav-icon" />
                 <span class="nav-label">Yeni Ürün</span>
             </a>
+            <a href="{{ route('visit.index') }}" wire:navigate
+               class="nav-item {{ request()->routeIs('visit.index') ? 'active' : '' }}">
+                <x-heroicon-o-eye class="nav-icon" />
+                <span class="nav-label">Ziyaret Logları</span>
+            </a>
+            <a href="{{ route('setting.index') }}"
+               class="nav-item {{ request()->routeIs('setting.index') ? 'active' : '' }}">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span class="nav-label">Ayarlar</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -62,6 +72,35 @@
 
     @livewireScripts
     @stack('scripts')
+    <script>
+    document.addEventListener('alpine:init', () => {
+        if (window.__customSelectRegistered) return;
+        window.__customSelectRegistered = true;
+        Alpine.data('customSelect', (config = {}) => ({
+            open: false,
+            value: '',
+            options: config.options || {},
+            placeholder: config.placeholder || 'Seçiniz',
+            init() {
+                this.$nextTick(() => {
+                    this.value = this.$refs.selectEl?.value ?? '';
+                });
+            },
+            getLabel() {
+                return this.options[this.value] ?? this.options[this.$refs.selectEl?.value] ?? this.placeholder;
+            },
+            choose(val) {
+                this.value = val;
+                if (this.$refs.selectEl) {
+                    this.$refs.selectEl.value = val;
+                    this.$refs.selectEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    this.$refs.selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                this.open = false;
+            }
+        }));
+    });
+    </script>
     <script>
         (function() {
             const sidebar = document.getElementById('sidebar');

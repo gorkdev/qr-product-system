@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    use HasFactory;
     protected $fillable = ['name', 'description', 'images', 'videos', 'pdf_path', 'share_token'];
 
     protected $casts = [
@@ -70,11 +76,47 @@ class Product extends Model
         return 'uuid';
     }
 
+    public function visits(): HasMany
+    {
+        return $this->hasMany(ProductVisit::class)->orderByDesc('visited_at');
+    }
+
+    /**
+     * Ürün linki için QR kod oluşturur veya mevcut olanı döner.
+     */
+    public function getQrCodePath(): string
+    {
+        $path = $this->getStoragePath() . 'qr.png';
+        $accessMode = Setting::get('access_mode', 'link');
+        $this->generateQrCode($path, $accessMode);
+
+        return Storage::url($path);
+    }
+
+    public function generateQrCode(string $path, ?string $accessMode = null): void
+    {
+        $accessMode ??= Setting::get('access_mode', 'link');
+        Storage::disk('public')->makeDirectory(dirname($path));
+        $baseUrl = url(route('product.gate', $this->share_token));
+        $url = $accessMode === 'qr_only' ? $baseUrl . '?ref=qr' : $baseUrl;
+        $qrCode = new QrCode($url);
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        Storage::disk('public')->put($path, $result->getString());
+    }
+
     protected static function booted()
     {
         static::creating(function ($product) {
             $product->uuid = (string) Str::uuid();
             $product->share_token = $product->share_token ?? Str::random(64);
+        });
+
+        static::retrieved(function ($product) {
+            if (empty($product->share_token)) {
+                $product->share_token = Str::random(64);
+                $product->saveQuietly();
+            }
         });
 
         static::deleting(function ($product) {

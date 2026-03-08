@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "IP Konum API Testi (ip-api.com)",
+    "description": "IP adresi ile konum bilgisi test etmek için - ip-api.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "IP Konum (8.8.8.8)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://ip-api.com/json/8.8.8.8",
+          "protocol": "http",
+          "host": ["ip-api", "com"],
+          "path": ["json", "8.8.8.8"]
+        },
+        "description": "8.8.8.8 (Google DNS) IP adresi için konum bilgisi. Token gerekmez."
+      }
+    },
+    {
+      "name": "Kendi IP'm",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://ip-api.com/json/",
+          "protocol": "http",
+          "host": ["ip-api", "com"],
+          "path": ["json"]
+        },
+        "description": "Boş path = isteği yapan IP'nin konumu"
+      }
+    }
+  ]
+}
