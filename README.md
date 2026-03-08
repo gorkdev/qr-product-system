@@ -128,10 +128,17 @@ php artisan test
 
 ## Tech Stack
 
-- **Backend**: Laravel 12, Livewire
-- **Frontend**: Blade, Tailwind CSS (via Vite), Alpine.js
-- **QR Codes**: endroid/qr-code
-- **Images**: intervention/image-laravel
+| Katman | Teknoloji | Açıklama |
+|--------|-----------|----------|
+| **Backend** | Laravel 12 | PHP framework |
+| **Reaktif UI** | Livewire 4 | Blade tabanlı reaktif bileşenler |
+| **Frontend** | Blade, Vite, Tailwind CSS 4 | Template, build tool, CSS |
+| **JavaScript** | Alpine.js | Hafif JS framework (formlar vb.) |
+| **QR Kod** | endroid/qr-code ^6.0 | PNG QR üretimi |
+| **Görsel işleme** | intervention/image-laravel ^1.5 | Resize, thumbnail |
+| **İkonlar** | blade-ui-kit/blade-heroicons ^2.6 | SVG ikonlar |
+| **Veritabanı** | SQLite / MySQL / PostgreSQL | Varsayılan: SQLite |
+| **Konum API** | ip-api.com | Ziyaret konum bilgisi (ücretsiz) |
 
 ## License
 
