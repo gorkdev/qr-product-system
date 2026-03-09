@@ -156,6 +156,7 @@ new class extends Component
                 'videos' => [],
             ]);
             $basePath = $product->getStoragePath();
+            $product->ensureQrCodeExists();
         }
 
         $imagesPath = $basePath . 'images/';
@@ -201,7 +202,10 @@ new class extends Component
             'pdf_path' => $pdfPath,
         ]);
 
+        $product->ensureQrCodeExists();
+
         $this->successMessage = $this->isEdit ? 'Ürün başarıyla güncellendi!' : 'Ürün başarıyla kaydedildi!';
+        $this->dispatch('toast', type: 'success', message: $this->successMessage);
 
         if (! $this->isEdit) {
             $gateUrl = url(route('product.gate', $product->share_token));

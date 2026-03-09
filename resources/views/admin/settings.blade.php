@@ -6,13 +6,6 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    <x-heroicon-o-check-circle class="alert-icon" />
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <form method="POST" action="{{ route('setting.update') }}">
                 @csrf
                 <div class="form-group">

@@ -1,0 +1,309 @@
+/* Ürün Detay Sayfası - Profesyonel Kurumsal Tasarım */
+
+.landing-content-wrap.visible {
+    animation: productFadeIn 0.5s ease-out;
+}
+
+@keyframes productFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.product-page {
+    --product-bg: #f5f4f2;
+    --product-surface: #ffffff;
+    --product-surface-elevated: #fefefe;
+    --product-text: #1a1816;
+    --product-text-muted: #57534e;
+    --product-text-subtle: #78716c;
+    --product-border: #e7e5e4;
+    --product-border-light: #f0eeeb;
+    --product-accent: #c2410c;
+    --product-accent-hover: #9a3412;
+    --product-accent-soft: rgba(194, 65, 12, 0.08);
+    --product-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    --product-shadow-md: 0 4px 20px -4px rgba(0,0,0,0.08);
+    --product-shadow-lg: 0 20px 50px -20px rgba(0,0,0,0.12);
+    --product-radius: 10px;
+    --product-radius-lg: 20px;
+    min-height: 100vh;
+    background: var(--product-bg);
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(194, 65, 12, 0.06), transparent),
+                      linear-gradient(180deg, var(--product-bg) 0%, #ebe9e6 100%);
+    padding: 2.5rem 0.5rem 3rem;
+}
+
+@media (min-width: 640px) {
+    .product-page {
+        padding: 3.5rem 1rem 4rem;
+    }
+    .product-hero {
+        margin: 0 -1rem;
+        margin-bottom: -2.5rem;
+    }
+}
+
+/* Üst Başlık Alanı */
+.product-header {
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+    padding: 0 0.25rem;
+}
+
+.product-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--product-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+}
+
+.product-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--product-accent);
+    border-radius: 50%;
+}
+
+/* Hero Cover */
+.product-hero {
+    position: relative;
+    margin: 0 -0.5rem;
+    margin-bottom: -2rem;
+    border-radius: var(--product-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--product-shadow-lg);
+}
+
+.product-hero__img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, #e7e5e4 0%, #d6d3d1 100%);
+}
+
+.product-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Main Card */
+.product-card {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--product-surface);
+    border-radius: var(--product-radius-lg);
+    box-shadow: var(--product-shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--product-border-light);
+}
+
+.product-body {
+    padding: 2rem 1.25rem 2.5rem;
+}
+
+@media (min-width: 640px) {
+    .product-body {
+        padding: 3rem 2.75rem 3.5rem;
+    }
+}
+
+/* Title & Meta */
+.product-title {
+    margin: 0 0 1.25rem;
+    padding: 0;
+    padding-inline-start: 0;
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--product-text);
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+    .product-title {
+        font-size: 2.25rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+.product-desc {
+    color: var(--product-text-muted);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: 0;
+    text-indent: 0;
+}
+
+@media (min-width: 640px) {
+    .product-desc {
+        font-size: 1.0625rem;
+    }
+}
+
+/* Sections - Kart Tabanlı */
+.product-section {
+    margin-top: 2.25rem;
+    padding: 1.5rem 1.25rem;
+    background: var(--product-surface-elevated);
+    border-radius: var(--product-radius);
+    border: 1px solid var(--product-border-light);
+}
+
+@media (min-width: 640px) {
+    .product-section {
+        margin-top: 2.5rem;
+        padding: 2rem 1.75rem;
+    }
+}
+
+.product-section:first-of-type {
+    margin-top: 2rem;
+}
+
+.product-section__title {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0 0 1.25rem;
+    margin-left: 0;
+    padding-left: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--product-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.product-section__title::before {
+    content: '';
+    width: 5px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--product-accent) 0%, var(--product-accent-hover) 100%);
+    border-radius: 3px;
+}
+
+/* Gallery */
+.product-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .product-gallery {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+.product-gallery__item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--product-radius);
+    overflow: hidden;
+    background: var(--product-border);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s;
+    border: 2px solid transparent;
+}
+
+.product-gallery__item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--product-shadow-md);
+    border-color: var(--product-border);
+}
+
+.product-gallery__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Videos */
+.product-videos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+    .product-videos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+.product-video-wrap {
+    position: relative;
+    border-radius: var(--product-radius);
+    overflow: hidden;
+    background: #0a0a0a;
+    aspect-ratio: 16/9;
+    box-shadow: var(--product-shadow);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.product-video-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+    pointer-events: none;
+}
+
+.product-video-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* PDF Download */
+.product-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, var(--product-accent) 0%, var(--product-accent-hover) 100%);
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: var(--product-radius);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 16px -4px rgba(194, 65, 12, 0.35);
+}
+
+.product-pdf:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -4px rgba(194, 65, 12, 0.45);
+    color: #fff !important;
+}
+
+.product-pdf svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+/* No cover fallback */
+.product-no-cover .product-hero__img {
+    aspect-ratio: 3/1;
+    background: linear-gradient(135deg, #d6d3d1 0%, #a8a29e 100%);
+}

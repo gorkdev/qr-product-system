@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'images', 'videos', 'pdf_path', 'share_token'];
+    protected $fillable = ['name', 'description', 'images', 'videos', 'pdf_path', 'qr_path', 'share_token'];
 
     protected $casts = [
         'images' => 'array',
@@ -83,14 +83,22 @@ class Product extends Model
 
     /**
      * Ürün linki için QR kod oluşturur veya mevcut olanı döner.
+     * QR dosyası storage'a kaydedilir ve yolu veritabanına yazılır.
      */
     public function getQrCodePath(): string
     {
         $path = $this->getStoragePath() . 'qr.png';
+        $publicDisk = Storage::disk('public');
+
+        // Mevcut QR dosyası varsa onu kullan (saveQuietly gereksiz yük bindirmez)
+        if (($this->qr_path && $publicDisk->exists($this->qr_path)) || $publicDisk->exists($path)) {
+            return $this->storagePathToUrl($this->qr_path ?? $path);
+        }
+
         $accessMode = Setting::get('access_mode', 'link');
         $this->generateQrCode($path, $accessMode);
 
-        return Storage::url($path);
+        return $this->storagePathToUrl($path);
     }
 
     public function generateQrCode(string $path, ?string $accessMode = null): void
@@ -103,6 +111,9 @@ class Product extends Model
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
         Storage::disk('public')->put($path, $result->getString());
+
+        $this->qr_path = $path;
+        $this->saveQuietly();
     }
 
     protected static function booted()
@@ -110,6 +121,10 @@ class Product extends Model
         static::creating(function ($product) {
             $product->uuid = (string) Str::uuid();
             $product->share_token = $product->share_token ?? Str::random(64);
+        });
+
+        static::created(function ($product) {
+            $product->ensureQrCodeExists();
         });
 
         static::retrieved(function ($product) {
@@ -122,5 +137,31 @@ class Product extends Model
         static::deleting(function ($product) {
             Storage::disk('public')->deleteDirectory($product->getStoragePath());
         });
+    }
+
+    /**
+     * QR kodunu storage'a kaydeder ve qr_path'i veritabanına yazar.
+     * Ürün oluşturulduğunda otomatik çağrılır.
+     */
+    public function ensureQrCodeExists(): void
+    {
+        $path = $this->getStoragePath() . 'qr.png';
+        $this->generateQrCode($path);
+    }
+
+    /**
+     * Storage path'i tarayıcıda çalışan URL'e çevirir.
+     * Web isteğindeyse gerçek host kullanır (APP_URL uyuşmazlığında da çalışır).
+     */
+    private function storagePathToUrl(string $path): string
+    {
+        $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+        $path = '/storage/' . $cleanPath;
+
+        if (request()->hasHeader('Host')) {
+            return request()->getSchemeAndHttpHost() . $path;
+        }
+
+        return config('app.url', '') . $path;
     }
 }

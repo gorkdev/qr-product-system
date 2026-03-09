@@ -1063,7 +1063,7 @@ body.sidebar-open .sidebar-overlay {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 300;
+    z-index: 10000;
     padding: 1rem;
 }
 
@@ -1132,6 +1132,13 @@ body.sidebar-open .sidebar-overlay {
     font-size: 0.9rem;
 }
 
+.modal-qr-error {
+    color: var(--danger, #dc3545);
+    font-size: 0.9rem;
+    margin: 0;
+    text-align: center;
+}
+
 .loader-spinner {
     width: 32px;
     height: 32px;
@@ -1168,6 +1175,47 @@ body.sidebar-open .sidebar-overlay {
 
 [x-cloak] {
     display: none !important;
+}
+
+/* ========== Skeleton Loader ========== */
+.skeleton {
+    display: inline-block;
+    background: linear-gradient(90deg, #e5e5e5 25%, #f0f0f0 50%, #e5e5e5 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+.skeleton-thumb {
+    width: 48px;
+    height: 48px;
+    display: block;
+}
+
+.skeleton-text {
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.skeleton-btn {
+    width: 2rem;
+    height: 1.75rem;
+    display: inline-block;
+    margin-right: 0.35rem;
+}
+
+.skeleton-select {
+    min-height: 40px;
+}
+
+.skeleton-row td {
+    vertical-align: middle;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 /* ========== Livewire Loading ========== */
@@ -1218,3 +1266,58 @@ body.sidebar-open .sidebar-overlay {
         width: 100%;
     }
 }
+
+/* ========== Toast Notifications ========== */
+.toast-container {
+    position: fixed;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 360px;
+    width: calc(100% - 2rem);
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: #171717;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fafafa;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.12);
+    will-change: transform, opacity;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+
+.toast-dot {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.toast-dot--success { background: #22c55e; }
+.toast-dot--error { background: #ef4444; }
+.toast-dot--waiting { background: #eab308; }
+
+.toast-message {
+    flex: 1;
+    letter-spacing: 0.01em;
+}
+
+/* Animasyon */
+.toast-enter, .toast-leave { transition: transform 0.25s ease, opacity 0.2s ease; }
+.toast-enter-start { opacity: 0; transform: translateY(-12px); }
+.toast-enter-end { opacity: 1; transform: translateY(0); }
+.toast-leave-start { opacity: 1; transform: translateY(0); }
+.toast-leave-end { opacity: 0; transform: translateY(-6px); }

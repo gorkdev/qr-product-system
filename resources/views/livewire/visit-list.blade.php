@@ -79,7 +79,7 @@
                                     <span class="table-ok">OK</span>
                                 @endif
                             </td>
-                            <td class="table-date">{{ $visit->visited_at?->format('d.m.Y H:i') ?? '-' }}</td>
+                            <td class="table-date">{{ format_date_modern($visit->visited_at) }}</td>
                         </tr>
                     @empty
                         <tr>

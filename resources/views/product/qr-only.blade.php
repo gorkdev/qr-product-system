@@ -4,12 +4,12 @@
 
 @push('styles')
 <style>
-.public-qronly { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-.public-qronly-card { background: #fff; border-radius: 20px; padding: 2.5rem; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
+.public-qronly { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: #faf9f7; }
+.public-qronly-card { background: #fff; border-radius: 20px; padding: 2.5rem; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 10px 40px -15px rgba(0,0,0,0.1); border: 1px solid #e7e5e4; }
 .public-qronly-icon { width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.public-qronly-icon svg { width: 40px; height: 40px; color: #d97706; }
-.public-qronly-title { margin: 0 0 0.75rem; font-size: 1.4rem; font-weight: 600; color: #171717; }
-.public-qronly-desc { margin: 0; color: #525252; line-height: 1.65; font-size: 0.95rem; }
+.public-qronly-icon svg { width: 40px; height: 40px; color: #b45309; }
+.public-qronly-title { margin: 0 0 0.75rem; font-size: 1.4rem; font-weight: 700; color: #1c1917; }
+.public-qronly-desc { margin: 0; color: #57534e; line-height: 1.65; font-size: 1rem; }
 @media (min-width: 600px) { .public-qronly-card { padding: 3rem; } .public-qronly-title { font-size: 1.5rem; } }
 </style>
 @endpush

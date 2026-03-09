@@ -31,7 +31,8 @@ class ProductListTest extends TestCase
         $response = $this->get(route('product.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Ürün adıyla ara');
+        $response->assertSee('Ürünler');
+        $response->assertSee('skeleton');
         $this->assertDatabaseCount('products', 3);
     }
 
@@ -39,10 +40,8 @@ class ProductListTest extends TestCase
     {
         Product::factory()->create(['name' => 'Test Ürün XYZ']);
 
-        $response = $this->get(route('product.index'));
-
-        $response->assertStatus(200);
-        $response->assertSee('Test Ürün XYZ');
+        $component = Livewire::test('product-list');
+        $component->assertSee('Test Ürün XYZ');
     }
 
     public function test_product_list_search_filters_by_name(): void

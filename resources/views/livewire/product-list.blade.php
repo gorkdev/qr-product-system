@@ -1,4 +1,4 @@
-<div x-data="{ qrModal: { open: false, name: '', qrUrl: '', productLink: '', uuid: '' }, qrImgLoaded: false }">
+<div x-data="{ qrModal: { open: false, name: '', qrUrl: '', productLink: '', uuid: '' }, qrImgLoaded: false, qrImgError: false }">
     <div class="card">
         <div class="filter-bar">
             <div class="filter-group">
@@ -62,14 +62,14 @@
                             </td>
                             <td>{{ $product->name }}</td>
                             <td class="table-date">{{ number_format($product->visits_count ?? 0) }}</td>
-                            <td class="table-date">{{ $product->created_at?->format('d.m.Y H:i') ?? '-' }}</td>
-                            <td class="table-date">{{ $product->updated_at?->format('d.m.Y H:i') ?? '-' }}</td>
+                            <td class="table-date">{{ format_date_modern($product->created_at) }}</td>
+                            <td class="table-date">{{ format_date_modern($product->updated_at) }}</td>
                             <td class="td-actions-cell">
                                 <div class="td-actions">
                                 @if($product->share_token)
                                 <button type="button" class="btn btn-outline btn-sm"
                                     @if($product->qr_url)
-                                    @click="qrModal = { open: true, name: $event.target.closest('tr').dataset.productName, qrUrl: $event.target.closest('tr').dataset.qrUrl, productLink: $event.target.closest('tr').dataset.productLink, uuid: $event.target.closest('tr').dataset.productUuid }; qrImgLoaded = false"
+                                    @@click="qrModal = { open: true, name: $event.target.closest('tr').dataset.productName, qrUrl: $event.target.closest('tr').dataset.qrUrl, productLink: $event.target.closest('tr').dataset.productLink, uuid: $event.target.closest('tr').dataset.productUuid }; qrImgLoaded = false; qrImgError = false"
                                     @else
                                     disabled
                                     @endif
@@ -118,31 +118,33 @@
         </div>
     @endif
 
-    <div class="modal-overlay" x-show="qrModal.open" x-cloak
-        @click="qrModal.open = false">
+    <div class="modal-overlay" x-show="qrModal.open" x-cloak x-transition
+        @@click="qrModal.open = false">
         <div class="modal modal-qr" @click.stop>
             <h3 class="modal-title" x-text="qrModal.name || 'QR Kod'"></h3>
             <div class="modal-qr-body">
                 <div class="modal-qr-img-wrap">
-                    <div class="modal-qr-loader" x-show="!qrImgLoaded && qrModal.qrUrl">
+                    <div class="modal-qr-loader" x-show="!qrImgLoaded && qrModal.qrUrl && !qrImgError">
                         <span class="loader-spinner"></span>
                         <span>Yükleniyor...</span>
                     </div>
+                    <p class="modal-qr-error" x-show="qrImgError" x-cloak>QR kodu yüklenemedi.</p>
                     <img :src="qrModal.qrUrl" alt="QR Kod" width="200" height="200" class="modal-qr-img"
                         :class="{ 'modal-qr-img--loaded': qrImgLoaded }"
-                        @load="qrImgLoaded = true">
+                        @@load="qrImgLoaded = true; qrImgError = false"
+                        @@error="qrImgLoaded = true; qrImgError = true">
                 </div>
-                <a x-show="qrImgLoaded" :href="qrModal.qrUrl" :download="'qr-' + (qrModal.uuid || '') + '.png'" class="btn btn-primary modal-qr-dl">QR Kodunu İndir</a>
+                <a x-show="qrImgLoaded && !qrImgError" :href="qrModal.qrUrl" :download="'qr-' + (qrModal.uuid || '') + '.png'" class="btn btn-primary modal-qr-dl">QR Kodunu İndir</a>
                 <div class="modal-qr-link-row">
                     <input type="text" class="form-input modal-qr-link-input" :value="qrModal.productLink" readonly>
                     <button type="button" class="btn btn-outline btn-sm modal-qr-copy"
-                        @click="navigator.clipboard.writeText(qrModal.productLink).then(() => { $el.textContent='Kopyalandı'; setTimeout(() => $el.textContent='Kopyala', 1500) })">
+                        @@click="navigator.clipboard.writeText(qrModal.productLink).then(() => { $el.textContent='Kopyalandı'; setTimeout(() => $el.textContent='Kopyala', 1500) })">
                         Kopyala
                     </button>
                 </div>
             </div>
             <div class="modal-actions" style="margin-top: 1rem;">
-                <button type="button" class="btn btn-outline" @click="qrModal.open = false">Kapat</button>
+                <button type="button" class="btn btn-outline" @@click="qrModal.open = false">Kapat</button>
             </div>
         </div>
     </div>

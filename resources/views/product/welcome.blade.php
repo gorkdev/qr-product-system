@@ -4,14 +4,14 @@
 
 @push('styles')
 <style>
-.public-welcome { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-.public-welcome-card { background: #fff; border-radius: 20px; padding: 2.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
-.public-welcome-icon { width: 72px; height: 72px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.welcome-icon { width: 36px; height: 36px; color: #16a34a; }
-.public-welcome-title { margin: 0 0 0.5rem; font-size: 1.6rem; font-weight: 600; color: #171717; letter-spacing: -0.02em; }
-.public-welcome-desc { margin: 0 0 1.75rem; color: #525252; line-height: 1.65; font-size: 0.975rem; }
-.public-welcome-btn { display: inline-block; padding: 0.875rem 1.75rem; background: linear-gradient(135deg, #171717 0%, #262626 100%); color: #fff; text-decoration: none; font-weight: 600; border-radius: 10px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-.public-welcome-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); color: #fff; }
+.public-welcome { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: #faf9f7; }
+.public-welcome-card { background: #fff; border-radius: 20px; padding: 2.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px -15px rgba(0,0,0,0.1); border: 1px solid #e7e5e4; }
+.public-welcome-icon { width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.welcome-icon { width: 40px; height: 40px; color: #b45309; }
+.public-welcome-title { margin: 0 0 0.5rem; font-size: 1.6rem; font-weight: 700; color: #1c1917; letter-spacing: -0.02em; }
+.public-welcome-desc { margin: 0 0 1.75rem; color: #57534e; line-height: 1.65; font-size: 1rem; }
+.public-welcome-btn { display: inline-block; padding: 0.875rem 1.75rem; background: linear-gradient(135deg, #b45309 0%, #92400e 100%); color: #fff !important; text-decoration: none; font-weight: 600; border-radius: 10px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 14px -4px rgba(180, 83, 9, 0.4); }
+.public-welcome-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px -4px rgba(180, 83, 9, 0.5); color: #fff !important; }
 @media (min-width: 600px) { .public-welcome-card { padding: 3rem; } .public-welcome-title { font-size: 1.75rem; } }
 </style>
 @endpush

@@ -103,4 +103,21 @@ class ProductAddTest extends TestCase
 
         $this->assertNotNull($component->get('createdProductLink'));
     }
+
+    public function test_product_creation_saves_qr_path_to_database(): void
+    {
+        $file = UploadedFile::fake()->image('cover.jpg', 100, 100);
+
+        Livewire::test('product-create-form')
+            ->set('name', 'QR Path Test Ürün')
+            ->set('description', 'En az on karakterlik açıklama.')
+            ->set('main_image', $file)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $product = Product::where('name', 'QR Path Test Ürün')->first();
+        $this->assertNotNull($product->qr_path);
+        $this->assertStringContainsString('products/', $product->qr_path);
+        $this->assertStringContainsString('qr.png', $product->qr_path);
+    }
 }

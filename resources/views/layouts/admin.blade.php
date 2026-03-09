@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     @livewireStyles
 </head>
-<body class="admin-body">
+<body class="admin-body" @if(session('success')) data-flash-success="{{ e(session('success')) }}" @endif>
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <x-heroicon-o-squares-2x2 class="sidebar-logo" />
@@ -70,10 +70,54 @@
         </div>
     </main>
 
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-label="Bildirimler"
+         x-data="toastContainer()">
+        <template x-for="(t, i) in toasts" :key="t.id">
+            <div :class="['toast', 'toast--' + t.type]"
+                 x-show="t.visible"
+                 x-transition:enter="toast-enter"
+                 x-transition:enter-start="toast-enter-start"
+                 x-transition:enter-end="toast-enter-end"
+                 x-transition:leave="toast-leave"
+                 x-transition:leave-start="toast-leave-start"
+                 x-transition:leave-end="toast-leave-end"
+                 @transitionend="if ($event.propertyName === 'opacity') removeToast(t.id)">
+                <span class="toast-dot toast-dot--success" x-show="t.type === 'success'" x-cloak></span>
+                <span class="toast-dot toast-dot--error" x-show="t.type === 'error'" x-cloak></span>
+                <span class="toast-dot toast-dot--waiting" x-show="t.type === 'waiting'"></span>
+                <span class="toast-message" x-text="t.message"></span>
+            </div>
+        </template>
+    </div>
+
     @livewireScripts
     @stack('scripts')
     <script>
     document.addEventListener('alpine:init', () => {
+        Alpine.store('toast', {
+            toasts: [],
+            show(type, message) {
+                const id = Date.now() + Math.random();
+                this.toasts.push({ id, type: type || 'success', message: message || '', visible: true });
+                const duration = type === 'waiting' ? 8000 : 4000;
+                setTimeout(() => {
+                    const t = this.toasts.find(x => x.id === id);
+                    if (t) t.visible = false;
+                }, duration);
+            },
+            removeToast(id) {
+                this.toasts = this.toasts.filter(t => t.id !== id);
+            }
+        });
+        Alpine.data('toastContainer', () => ({
+            get toasts() { return Alpine.store('toast').toasts },
+            removeToast(id) { Alpine.store('toast').removeToast(id) }
+        }));
+        window.showToast = (type, message) => Alpine.store('toast').show(type, message);
+
+        const flashMsg = document.body.dataset.flashSuccess;
+        if (flashMsg) Alpine.store('toast').show('success', flashMsg);
+
         if (window.__customSelectRegistered) return;
         window.__customSelectRegistered = true;
         Alpine.data('customSelect', (config = {}) => ({
@@ -99,6 +143,13 @@
                 this.open = false;
             }
         }));
+    });
+
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('toast', (e) => {
+            const d = e?.detail ?? e;
+            if (window.showToast) window.showToast(d?.type || 'success', d?.message || '');
+        });
     });
     </script>
     <script>

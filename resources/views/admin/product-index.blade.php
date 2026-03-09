@@ -4,5 +4,5 @@
 @section('page-title', 'Ürünler')
 
 @section('content')
-    <livewire:product-list />
+    <livewire:product-list lazy />
 @endsection
