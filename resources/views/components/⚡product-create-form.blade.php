@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\Product;
-use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -209,9 +208,7 @@ new class extends Component
 
         if (! $this->isEdit) {
             $gateUrl = url(route('product.gate', $product->share_token));
-            $this->createdProductLink = Setting::get('access_mode', 'link') === 'qr_only'
-                ? $gateUrl . '?ref=qr'
-                : $gateUrl;
+            $this->createdProductLink = $gateUrl;
             $this->createdProductShareToken = $product->share_token;
             $this->reset(['name', 'description', 'main_image', 'additional_images', 'videos', 'pdf']);
             $this->additional_images = [null];
@@ -259,9 +256,8 @@ new class extends Component
             @endif
 
             @php
-                $accessMode = \App\Models\Setting::get('access_mode', 'link');
                 $gateBase = $product ? url(route('product.gate', $product->share_token)) : null;
-                $productLink = $createdProductLink ?? ($isEdit && $gateBase ? ($accessMode === 'qr_only' ? $gateBase . '?ref=qr' : $gateBase) : null);
+                $productLink = $createdProductLink ?? ($isEdit && $gateBase ? $gateBase : null);
             @endphp
             @if($productLink)
                 <div class="product-link-box" x-data="{ copied: false }">

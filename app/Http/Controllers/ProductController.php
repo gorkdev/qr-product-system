@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductVisit;
-use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;

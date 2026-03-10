@@ -6,16 +6,15 @@
                     placeholder="Ürün adıyla ara...">
             </div>
             <div class="filter-group">
-                <x-custom-select
-                    wire:model.live="sortBy"
-                    :options="['created_at' => 'Eklenme tarihi', 'updated_at' => 'Son güncelleme', 'name' => 'Ürün adı', 'visits_count' => 'Ziyaret sayısı']"
-                    placeholder="Sırala" />
+                <x-custom-select wire:model.live="sortBy" :options="[
+                    'created_at' => 'Eklenme tarihi',
+                    'updated_at' => 'Son güncelleme',
+                    'name' => 'Ürün adı',
+                    'visits_count' => 'Ziyaret sayısı',
+                ]" placeholder="Sırala" />
             </div>
             <div class="filter-group">
-                <x-custom-select
-                    wire:model.live="sortDir"
-                    :options="['desc' => 'Azalan', 'asc' => 'Artan']"
-                    placeholder="Yön" />
+                <x-custom-select wire:model.live="sortDir" :options="['desc' => 'Azalan', 'asc' => 'Artan']" placeholder="Yön" />
             </div>
         </div>
 
@@ -41,19 +40,20 @@
                 </thead>
                 <tbody>
                     @forelse($products as $product)
-                        <tr wire:key="product-{{ $product->id }}"
-                            data-qr-url="{{ $product->qr_url ?? '' }}"
+                        <tr wire:key="product-{{ $product->id }}" data-qr-url="{{ $product->qr_url ?? '' }}"
                             data-product-link="{{ $product->product_link ?? '' }}"
-                            data-link-href="{{ $product->link_href ?? '' }}"
-                            data-product-name="{{ e($product->name) }}"
+                            data-link-href="{{ $product->link_href ?? '' }}" data-product-name="{{ e($product->name) }}"
                             data-product-uuid="{{ $product->uuid ?? '' }}">
                             <td>
                                 @php
                                     $fullImg = ($product->images ?? [])[0] ?? null;
                                     $thumb = $product->main_thumbnail;
                                 @endphp
-                                @if($fullImg)
-                                    <img src="{{ $thumb }}" data-src-full="{{ $fullImg }}" alt="" class="table-thumb" width="48" height="48" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.dataset.srcFull||this.src">
+                                @if ($fullImg)
+                                    <img src="{{ $thumb }}" data-src-full="{{ $fullImg }}" alt=""
+                                        class="table-thumb" width="48" height="48" loading="lazy"
+                                        decoding="async"
+                                        onerror="this.onerror=null;this.src=this.dataset.srcFull||this.src">
                                 @else
                                     <span class="table-thumb-placeholder">
                                         <x-heroicon-o-photo class="placeholder-icon" />
@@ -66,26 +66,27 @@
                             <td class="table-date">{{ format_date_modern($product->updated_at) }}</td>
                             <td class="td-actions-cell">
                                 <div class="td-actions">
-                                @if($product->share_token)
-                                <button type="button" class="btn btn-outline btn-sm"
-                                    @if($product->qr_url)
-                                    @@click="qrModal = { open: true, name: $event.target.closest('tr').dataset.productName, qrUrl: $event.target.closest('tr').dataset.qrUrl, productLink: $event.target.closest('tr').dataset.productLink, uuid: $event.target.closest('tr').dataset.productUuid }; qrImgLoaded = false; qrImgError = false"
+                                    @if ($product->share_token)
+                                        <button type="button" class="btn btn-outline btn-sm"
+                                            @if ($product->qr_url) @@click="qrModal = { open: true, name: $event.target.closest('tr').dataset.productName, qrUrl: $event.target.closest('tr').dataset.qrUrl, productLink: $event.target.closest('tr').dataset.productLink, uuid: $event.target.closest('tr').dataset.productUuid }; qrImgLoaded = false; qrImgError = false"
                                     @else
-                                    disabled
+                                    disabled @endif
+                                            title="{{ $product->qr_url ? 'QR Kodunu görüntüle' : 'QR kod mevcut değil' }}">
+                                            <x-heroicon-o-squares-2x2 class="btn-icon" />
+                                        </button>
+                                        <a href="{{ $product->link_href ?? '#' }}" target="_blank" rel="noopener"
+                                            class="btn btn-outline btn-sm" title="Ürün linkini görüntüle">
+                                            <x-heroicon-o-link class="btn-icon" />
+                                        </a>
                                     @endif
-                                    title="{{ $product->qr_url ? 'QR Kodunu görüntüle' : 'QR kod mevcut değil' }}">
-                                    <x-heroicon-o-squares-2x2 class="btn-icon" />
-                                </button>
-                                <a href="{{ $product->link_href ?? '#' }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" title="Ürün linkini görüntüle">
-                                    <x-heroicon-o-link class="btn-icon" />
-                                </a>
-                                @endif
-                                <a href="{{ route('product.edit', $product->uuid) }}" class="btn btn-outline btn-sm" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="btn-icon" /> Düzenle
-                                </a>
-                                <button type="button" class="btn btn-outline btn-sm btn-danger" wire:click="confirmDelete({{ $product->id }})">
-                                    <x-heroicon-o-trash class="btn-icon" /> Sil
-                                </button>
+                                    <a href="{{ route('product.edit', $product->uuid) }}"
+                                        class="btn btn-outline btn-sm" wire:navigate>
+                                        <x-heroicon-o-pencil-square class="btn-icon" /> Düzenle
+                                    </a>
+                                    <button type="button" class="btn btn-outline btn-sm btn-danger"
+                                        wire:click="confirmDelete({{ $product->id }})">
+                                        <x-heroicon-o-trash class="btn-icon" /> Sil
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -98,14 +99,14 @@
             </table>
         </div>
 
-        @if($products->hasPages())
+        @if ($products->hasPages())
             <div class="pagination-wrap">
                 {{ $products->links('livewire.pagination') }}
             </div>
         @endif
     </div>
 
-    @if($deleteProductId)
+    @if ($deleteProductId)
         <div class="modal-overlay" wire:click="cancelDelete">
             <div class="modal" wire:click.stop>
                 <h3 class="modal-title">Ürünü Sil</h3>
@@ -120,7 +121,7 @@
 
     <div class="modal-overlay" x-show="qrModal.open" x-cloak x-transition
         @@click="qrModal.open = false">
-        <div class="modal modal-qr" @click.stop>
+        <div class="modal modal-qr" @@click.stop>
             <h3 class="modal-title" x-text="qrModal.name || 'QR Kod'"></h3>
             <div class="modal-qr-body">
                 <div class="modal-qr-img-wrap">
@@ -136,9 +137,12 @@
                             @@error="qrImgLoaded = true; qrImgError = true">
                     </template>
                 </div>
-                <a x-show="qrImgLoaded && !qrImgError" :href="qrModal.qrUrl" :download="'qr-' + (qrModal.uuid || '') + '.png'" class="btn btn-primary modal-qr-dl">QR Kodunu İndir</a>
+                <a x-show="qrImgLoaded && !qrImgError" :href="qrModal.qrUrl"
+                    :download="'qr-' + (qrModal.uuid || '') + '.png'" class="btn btn-primary modal-qr-dl">QR Kodunu
+                    İndir</a>
                 <div class="modal-qr-link-row">
-                    <input type="text" class="form-input modal-qr-link-input" :value="qrModal.productLink" readonly>
+                    <input type="text" class="form-input modal-qr-link-input" :value="qrModal.productLink"
+                        readonly>
                     <button type="button" class="btn btn-outline btn-sm modal-qr-copy"
                         @@click="navigator.clipboard.writeText(qrModal.productLink).then(() => { $el.textContent='Kopyalandı'; setTimeout(() => $el.textContent='Kopyala', 1500) })">
                         Kopyala
@@ -146,7 +150,8 @@
                 </div>
             </div>
             <div class="modal-actions" style="margin-top: 1rem;">
-                <button type="button" class="btn btn-outline" @@click="qrModal.open = false">Kapat</button>
+                <button type="button" class="btn btn-outline"
+                    @@click="qrModal.open = false">Kapat</button>
             </div>
         </div>
     </div>

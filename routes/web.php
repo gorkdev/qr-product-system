@@ -8,6 +8,7 @@ use App\Http\Controllers\SettingController;
 Route::get('/', DashboardController::class)->name('admin.dashboard');
 Route::get('/ayarlar', [SettingController::class, 'index'])->name('setting.index');
 Route::post('/ayarlar', [SettingController::class, 'update'])->name('setting.update');
+Route::get('/ayarlar/qr-preview', [SettingController::class, 'preview'])->name('setting.preview');
 Route::get('/ziyaretler', fn () => view('admin.visit-index'))->name('visit.index');
 Route::get('/urun-bilgisi/{share_token}', [ProductController::class, 'gate'])->name('product.gate');
 Route::post('/urun-bilgisi/{share_token}/kaydet', [ProductController::class, 'saveVisit'])->name('product.saveVisit');
