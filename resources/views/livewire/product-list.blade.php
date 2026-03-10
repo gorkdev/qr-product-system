@@ -129,10 +129,12 @@
                         <span>Yükleniyor...</span>
                     </div>
                     <p class="modal-qr-error" x-show="qrImgError" x-cloak>QR kodu yüklenemedi.</p>
-                    <img :src="qrModal.qrUrl" alt="QR Kod" width="200" height="200" class="modal-qr-img"
-                        :class="{ 'modal-qr-img--loaded': qrImgLoaded }"
-                        @@load="qrImgLoaded = true; qrImgError = false"
-                        @@error="qrImgLoaded = true; qrImgError = true">
+                    <template x-if="qrModal.open && qrModal.qrUrl">
+                        <img :src="qrModal.qrUrl" alt="QR Kod" width="200" height="200" class="modal-qr-img"
+                            :class="{ 'modal-qr-img--loaded': qrImgLoaded }"
+                            @@load="qrImgLoaded = true; qrImgError = false"
+                            @@error="qrImgLoaded = true; qrImgError = true">
+                    </template>
                 </div>
                 <a x-show="qrImgLoaded && !qrImgError" :href="qrModal.qrUrl" :download="'qr-' + (qrModal.uuid || '') + '.png'" class="btn btn-primary modal-qr-dl">QR Kodunu İndir</a>
                 <div class="modal-qr-link-row">

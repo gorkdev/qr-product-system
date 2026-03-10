@@ -13,15 +13,6 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
-    private function isQrAccessAllowed(Request $request): bool
-    {
-        $mode = Setting::get('access_mode', 'link');
-        if ($mode === 'link') {
-            return true;
-        }
-        return $request->query('ref') === 'qr';
-    }
-
     /**
      * Tek giriş noktası - loader, yönlendirme ve içerik aynı sayfada.
      * URL: urun-bilgisi/{share_token}
@@ -29,20 +20,6 @@ class ProductController extends Controller
     public function gate(string $share_token, Request $request)
     {
         $product = Product::where('share_token', $share_token)->firstOrFail();
-        $mode = Setting::get('access_mode', 'link');
-
-        $showContent = $mode === 'qr_only' && session('product_entered_' . $share_token);
-        if ($showContent) {
-            return view('product.landing', [
-                'product' => $product,
-                'showRedirect' => false,
-                'showContent' => true,
-            ]);
-        }
-
-        if (! $this->isQrAccessAllowed($request)) {
-            return view('product.qr-only');
-        }
 
         return view('product.landing', [
             'product' => $product,

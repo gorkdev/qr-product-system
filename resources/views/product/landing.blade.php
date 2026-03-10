@@ -38,9 +38,12 @@ body.landing-page { overflow: hidden; height: 100vh; margin: 0; padding: 0; }
         </div>
     </div>
 
-    {{-- Yönlendirme - ayarlara göre gösterilir --}}
+    {{-- Yönlendirme --}}
     <div class="landing-redirect" id="redirectSection">
         <div class="landing-card">
+            <h2 class="landing-brand" style="margin: 0 0 1rem; font-size: 1rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #a16207;">
+                Akçan Grup
+            </h2>
             <div class="landing-spinner" id="redirectSpinner"></div>
             <p class="landing-msg">Yönlendiriliyorsunuz, lütfen bekleyin.</p>
             <p class="landing-msg landing-timer" id="timerText">5 sn</p>
@@ -59,9 +62,6 @@ body.landing-page { overflow: hidden; height: 100vh; margin: 0; padding: 0; }
 
 <script>
 (function() {
-    const showRedirect = @json($showRedirect);
-    const showContent = @json($showContent);
-
     const loaderSection = document.getElementById('loaderSection');
     const redirectSection = document.getElementById('redirectSection');
     const contentSection = document.getElementById('contentSection');
@@ -76,17 +76,8 @@ body.landing-page { overflow: hidden; height: 100vh; margin: 0; padding: 0; }
     const token = document.querySelector('meta[name="csrf-token"]')?.content;
     const MIN_WAIT_MS = 5000;
 
-    if (showContent) {
-        contentSection.classList.add('visible');
-        return;
-    }
-
     document.body.classList.add('landing-page');
-    loaderSection.classList.add('visible');
-    setTimeout(function() {
-        loaderSection.classList.remove('visible');
-        redirectSection.classList.add('visible');
-    }, 200);
+    redirectSection.classList.add('visible');
 
     let saveComplete = false;
     let saveError = null;
@@ -95,7 +86,6 @@ body.landing-page { overflow: hidden; height: 100vh; margin: 0; padding: 0; }
 
     function showContentAndHideRest() {
         document.body.classList.remove('landing-page');
-        loaderSection.classList.remove('visible');
         redirectSection.classList.remove('visible');
         contentSection.classList.add('visible');
     }
